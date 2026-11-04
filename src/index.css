@@ -1,0 +1,314 @@
+:root {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #172033;
+  background: #f4f6f8;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+a {
+  color: #155e75;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button {
+  border: 0;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1rem;
+  color: #fff;
+  background: #155e75;
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 3px solid #67e8f9;
+  outline-offset: 2px;
+}
+
+.auth-page,
+.app-state {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+}
+
+.auth-card {
+  width: min(100%, 27rem);
+  padding: clamp(1.25rem, 5vw, 2rem);
+  border: 1px solid #d9e0e7;
+  border-radius: 0.75rem;
+  background: #fff;
+  box-shadow: 0 0.75rem 2rem rgb(15 23 42 / 8%);
+}
+
+.brand,
+.logo {
+  margin: 0;
+  color: #0f5267;
+  font-size: 1.4rem;
+  font-weight: 750;
+  text-decoration: none;
+}
+
+.auth-card h1 {
+  margin: 0.6rem 0 1.5rem;
+}
+
+.login-form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.login-form label {
+  margin-top: 0.35rem;
+  font-weight: 650;
+}
+
+.login-form input {
+  width: 100%;
+  border: 1px solid #aeb9c5;
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.75rem;
+  color: #172033;
+  background: #fff;
+}
+
+.login-form button {
+  margin-top: 0.6rem;
+}
+
+.message,
+.progress-message,
+.inline-error {
+  line-height: 1.5;
+}
+
+.error-message,
+.inline-error {
+  color: #9f1d20;
+}
+
+.progress-message,
+.inline-error {
+  margin: 0;
+  font-size: 0.875rem;
+}
+
+.app-shell {
+  min-height: 100vh;
+}
+
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: 1rem max(1rem, calc((100vw - 72rem) / 2));
+  border-bottom: 1px solid #d9e0e7;
+  background: #fff;
+}
+
+.app-header nav {
+  margin-top: 0.55rem;
+}
+
+.app-header nav a {
+  font-weight: 650;
+}
+
+.user-panel {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 1rem;
+  text-align: right;
+}
+
+.user-name,
+.user-role {
+  margin: 0;
+}
+
+.user-name {
+  font-weight: 700;
+}
+
+.user-role {
+  margin-top: 0.15rem;
+  color: #526173;
+  font-size: 0.875rem;
+}
+
+.sign-out-control {
+  display: grid;
+  justify-items: end;
+  gap: 0.25rem;
+}
+
+.app-content {
+  width: min(100%, 72rem);
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, 2rem);
+}
+
+.page-heading h2,
+.project-summary h2 {
+  margin: 0.15rem 0 0;
+  font-size: clamp(1.75rem, 5vw, 2.35rem);
+}
+
+.eyebrow {
+  margin: 0;
+  color: #526173;
+  font-size: 0.8rem;
+  font-weight: 750;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.project-list,
+.task-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.project-card,
+.task-card,
+.project-summary,
+.message {
+  border: 1px solid #d9e0e7;
+  border-radius: 0.65rem;
+  background: #fff;
+}
+
+.project-card,
+.project-summary,
+.message {
+  padding: 1rem;
+}
+
+.project-card h3,
+.task-card h4 {
+  margin: 0;
+}
+
+.project-card p {
+  min-height: 3rem;
+  color: #526173;
+}
+
+.project-card a,
+.back-link {
+  font-weight: 700;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.project-summary p:last-child {
+  margin-bottom: 0;
+  color: #526173;
+}
+
+.tasks-section {
+  margin-top: 2rem;
+}
+
+.tasks-section > h3 {
+  font-size: 1.4rem;
+}
+
+.task-card {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+}
+
+.task-card p {
+  margin: 0.45rem 0 0;
+  color: #526173;
+  font-size: 0.9rem;
+}
+
+.status-label {
+  flex: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.6rem;
+  color: #164e63;
+  background: #cffafe;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.empty-message {
+  color: #526173;
+}
+
+.error-panel {
+  margin-top: 1.5rem;
+  border-color: #fecaca;
+  color: #7f1d1d;
+  background: #fff7f7;
+}
+
+.error-panel p {
+  margin-top: 0;
+}
+
+@media (max-width: 40rem) {
+  .app-header,
+  .user-panel {
+    align-items: flex-start;
+  }
+
+  .app-header {
+    flex-direction: column;
+  }
+
+  .user-panel {
+    width: 100%;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .sign-out-control {
+    justify-items: end;
+  }
+
+  .task-card {
+    flex-direction: column;
+  }
+}
