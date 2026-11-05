@@ -138,6 +138,9 @@ a:focus-visible {
 }
 
 .app-header nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
   margin-top: 0.55rem;
 }
 
@@ -419,6 +422,157 @@ a:focus-visible {
   margin-top: 0;
 }
 
+.task-details-card,
+.task-panel {
+  border: 1px solid #d9e0e7;
+  border-radius: 0.65rem;
+  padding: clamp(1rem, 4vw, 1.5rem);
+  background: #fff;
+}
+
+.task-details-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.task-details-heading h2 {
+  margin: 0.2rem 0 0;
+  font-size: clamp(1.75rem, 5vw, 2.35rem);
+}
+
+.task-description {
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+.task-metadata {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+}
+
+.task-metadata dt {
+  color: #526173;
+  font-size: 0.8rem;
+  font-weight: 750;
+  text-transform: uppercase;
+}
+
+.task-metadata dd {
+  margin: 0.25rem 0 0;
+}
+
+.task-panel {
+  margin-top: 1.25rem;
+}
+
+.task-panel > h3 {
+  margin-top: 0;
+}
+
+.transition-form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.transition-form label {
+  font-weight: 650;
+}
+
+.transition-form textarea {
+  width: 100%;
+  border: 1px solid #aeb9c5;
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.75rem;
+  resize: vertical;
+}
+
+.transition-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.transition-error {
+  border-left: 0.25rem solid #a52226;
+  padding-left: 0.75rem;
+  color: #7f1d1d;
+}
+
+.transition-error p {
+  margin-top: 0;
+}
+
+.history-list {
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.history-event {
+  border-left: 0.25rem solid #67e8f9;
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+}
+
+.history-event h4,
+.history-event p {
+  margin: 0;
+}
+
+.history-event p {
+  margin-top: 0.35rem;
+  color: #526173;
+}
+
+.history-comment {
+  color: #172033 !important;
+  white-space: pre-wrap;
+}
+
+.task-back-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.my-task-list {
+  display: grid;
+  gap: 1rem;
+  margin: 1.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.my-task-card {
+  border: 1px solid #d9e0e7;
+  border-radius: 0.65rem;
+  padding: 1rem;
+  background: #fff;
+}
+
+.my-task-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.my-task-heading h3,
+.my-task-card p {
+  margin: 0;
+}
+
+.my-task-card p {
+  margin-top: 0.65rem;
+  color: #526173;
+}
+
 @media (max-width: 40rem) {
   .app-header,
   .user-panel {
@@ -454,7 +608,9 @@ a:focus-visible {
   }
 
   .page-heading,
-  .section-heading {
+  .section-heading,
+  .task-details-heading,
+  .my-task-heading {
     align-items: flex-start;
     flex-direction: column;
   }

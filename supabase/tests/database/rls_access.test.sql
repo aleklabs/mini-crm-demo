@@ -206,8 +206,8 @@ select is(
     where n.nspname = 'private'
       and has_function_privilege('authenticated', p.oid, 'EXECUTE')
   ),
-  3,
-  'authenticated can execute only the two RLS helpers and transition implementation'
+  4,
+  'authenticated can execute only the RLS helpers and RPC implementations'
 );
 
 select is(
@@ -231,7 +231,7 @@ select is(
       and p.prosecdef
       and p.proconfig @> array['search_path=""']::text[]
   ),
-  7,
+  8,
   'all SECURITY DEFINER functions use an empty search_path'
 );
 

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Mini CRM">
+  <rect width="64" height="64" rx="14" fill="#155e75" />
+  <path d="M14 45V23l18-9 18 9v22h-8V28L32 23l-10 5v17z" fill="#cffafe" />
+  <path d="M27 45V33h10v12z" fill="#fff" />
+</svg>

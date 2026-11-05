@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom'
 import { useAuth } from './auth-context.ts'
 import type { Tables } from './database.types.ts'
 import { supabase } from './supabase.ts'
+import { getTaskStatusLabel } from './task-status.ts'
 
 type Project = Pick<Tables<'projects'>, 'address' | 'id' | 'name'>
 
@@ -24,14 +25,6 @@ type ProjectState =
       projectId: string
       tasks: ProjectTask[]
     }
-
-const statusLabels: Record<string, string> = {
-  accepted: 'Принята',
-  in_progress: 'В работе',
-  in_review: 'На проверке',
-  new: 'Новая',
-  rework: 'На доработке',
-}
 
 export function ProjectPage() {
   const navigate = useNavigate()
@@ -353,14 +346,16 @@ export function ProjectPage() {
                   <li key={task.id}>
                     <article className="task-card">
                       <div>
-                        <h4>{task.title}</h4>
+                        <h4>
+                          <Link to={`/tasks/${task.id}`}>{task.title}</Link>
+                        </h4>
                         {task.assignee ? (
                           <p>Исполнитель: {task.assignee.display_name}</p>
                         ) : null}
                       </div>
                       <div className="task-card-side">
                         <span className="status-label">
-                          {statusLabels[task.status] ?? task.status}
+                          {getTaskStatusLabel(task.status)}
                         </span>
                         {profile?.role === 'manager' ? (
                           <div className="task-actions">

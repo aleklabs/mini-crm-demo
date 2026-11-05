@@ -346,6 +346,15 @@ test.describe.serial('Mini CRM authentication and project browsing', () => {
   }) => {
     const response = await page.goto('/')
     expect(response?.ok()).toBe(true)
+    await expect(page.locator('link[rel="icon"]')).toHaveAttribute(
+      'href',
+      '/favicon.svg',
+    )
+    const faviconResponse = await page.request.get('/favicon.svg')
+    expect(faviconResponse.ok()).toBe(true)
+    expect(faviconResponse.headers()['content-type']).toContain(
+      'image/svg+xml',
+    )
     await expect(page).toHaveURL(/\/login$/)
     await expect(page.getByText('Mini CRM')).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Вход' })).toBeVisible()

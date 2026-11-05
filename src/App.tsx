@@ -8,10 +8,12 @@ import {
 } from 'react-router-dom'
 import { useAuth, type UserRole } from './auth-context.ts'
 import { LoginPage } from './LoginPage.tsx'
+import { MyTasksPage } from './MyTasksPage.tsx'
 import { ProjectFormPage } from './ProjectFormPage.tsx'
 import { ProjectPage } from './ProjectPage.tsx'
 import { ProjectsPage } from './ProjectsPage.tsx'
 import { TaskFormPage } from './TaskFormPage.tsx'
+import { TaskPage } from './TaskPage.tsx'
 
 const roleLabels: Record<UserRole, string> = {
   executor: 'Исполнитель',
@@ -130,6 +132,9 @@ function AppLayout() {
           </Link>
           <nav aria-label="Основная навигация">
             <Link to="/projects">Объекты</Link>
+            {profile.role === 'executor' ? (
+              <Link to="/my-tasks">Мои задачи</Link>
+            ) : null}
           </nav>
         </div>
         <div className="user-panel">
@@ -176,6 +181,20 @@ function ManagerRoutes() {
   return <Outlet />
 }
 
+function ExecutorRoutes() {
+  const { profile } = useAuth()
+
+  if (profile?.role !== 'executor') {
+    return (
+      <section className="message access-denied">
+        <h2>Недостаточно прав</h2>
+      </section>
+    )
+  }
+
+  return <Outlet />
+}
+
 function NotFoundPage() {
   return (
     <main className="app-state">
@@ -193,6 +212,10 @@ function App() {
       <Route element={<ProtectedRoutes />}>
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/:projectId" element={<ProjectPage />} />
+        <Route path="/tasks/:taskId" element={<TaskPage />} />
+        <Route element={<ExecutorRoutes />}>
+          <Route path="/my-tasks" element={<MyTasksPage />} />
+        </Route>
         <Route element={<ManagerRoutes />}>
           <Route
             path="/projects/new"

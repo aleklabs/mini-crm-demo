@@ -16,14 +16,22 @@ dist-ssr
 .env
 .env.*
 !.env.example
+docker.env
+demo-credentials*.txt
 
 # Supabase CLI runtime files
 supabase/.branches
 supabase/.temp
 
+# Deployment runtime files
+.vercel
+
 # Test artifacts
 playwright-report
 test-results
+
+# Project archives
+*.zip
 
 # Editor directories and files
 .vscode/*

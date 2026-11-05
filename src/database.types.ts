@@ -185,9 +185,21 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_task_history: {
+        Args: { p_task_id: string }
+        Returns: {
+          actor_display_name: string
+          actor_id: string
+          comment: string | null
+          created_at: string
+          from_status: string | null
+          id: string
+          to_status: string
+        }[]
+      }
       transition_task: {
         Args: {
-          p_comment?: string
+          p_comment?: string | null
           p_new_status: string
           p_task_id: string
         }
