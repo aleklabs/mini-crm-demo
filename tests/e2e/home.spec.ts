@@ -467,7 +467,7 @@ test.describe.serial('Mini CRM authentication and project browsing', () => {
     page,
   }) => {
     await login(page, 'manager')
-    const headings = page.locator('.project-card h3')
+    const headings = page.locator('.project-card h3').filter({ hasText: runId })
     await expect(headings).toHaveText([
       projectNames.executor1,
       projectNames.executor2,

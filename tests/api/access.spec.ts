@@ -707,6 +707,14 @@ test.describe.serial('local Supabase Auth and CRM access', () => {
     expect(projectInsert.error).not.toBeNull()
     expect(taskInsert.error).not.toBeNull()
 
+    const projectUpdate = await executor
+      .from('projects')
+      .update({ name: 'Executor Changed Project' })
+      .eq('id', projectIds.executor1)
+      .select('id')
+    expect(projectUpdate.error).toBeNull()
+    expect(projectUpdate.data).toEqual([])
+
     const ownTaskUpdate = await executor
       .from('tasks')
       .update({ title: 'Executor Changed Own Task' })
@@ -776,6 +784,11 @@ test.describe.serial('local Supabase Auth and CRM access', () => {
       .select('role')
       .eq('id', userIds.executor1)
       .single()
+    const projectState = await adminClient!
+      .from('projects')
+      .select('name')
+      .eq('id', projectIds.executor1)
+      .single()
     const historyState = await adminClient!
       .from('task_status_history')
       .select('comment')
@@ -788,6 +801,7 @@ test.describe.serial('local Supabase Auth and CRM access', () => {
       title: 'API Executor Two Task',
     })
     expect(profileState.data?.role).toBe('executor')
+    expect(projectState.data?.name).toBe('API Executor One Project')
     expect(historyState.data?.comment).toBeNull()
   })
 

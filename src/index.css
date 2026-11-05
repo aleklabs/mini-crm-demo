@@ -25,7 +25,9 @@ a {
 }
 
 button,
-input {
+input,
+select,
+textarea {
   font: inherit;
 }
 
@@ -45,6 +47,8 @@ button:disabled {
 
 button:focus-visible,
 input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
 a:focus-visible {
   outline: 3px solid #67e8f9;
   outline-offset: 2px;
@@ -182,6 +186,23 @@ a:focus-visible {
   font-size: clamp(1.75rem, 5vw, 2.35rem);
 }
 
+.page-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.button-link {
+  display: inline-block;
+  border-radius: 0.5rem;
+  padding: 0.65rem 1rem;
+  color: #fff;
+  background: #155e75;
+  font-weight: 700;
+  text-decoration: none;
+}
+
 .eyebrow {
   margin: 0;
   color: #526173;
@@ -241,11 +262,89 @@ a:focus-visible {
   color: #526173;
 }
 
+.project-actions,
+.form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+}
+
+.project-actions .button-link {
+  align-self: center;
+}
+
+.danger-button {
+  background: #a52226;
+}
+
+.secondary-button {
+  color: #172033;
+  background: #e5eaf0;
+}
+
+.project-form-card {
+  width: min(100%, 36rem);
+  padding: clamp(1.25rem, 4vw, 2rem);
+  border: 1px solid #d9e0e7;
+  border-radius: 0.65rem;
+  background: #fff;
+}
+
+.project-form-card h2 {
+  margin: 0.25rem 0 1.5rem;
+}
+
+.project-form {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.project-form label {
+  margin-top: 0.35rem;
+  font-weight: 650;
+}
+
+.project-form input,
+.project-form select,
+.project-form textarea {
+  width: 100%;
+  border: 1px solid #aeb9c5;
+  border-radius: 0.5rem;
+  padding: 0.7rem 0.75rem;
+  color: #172033;
+  background: #fff;
+}
+
+.project-form textarea {
+  resize: vertical;
+}
+
+.form-message {
+  margin: 0.4rem 0 0;
+}
+
+.access-denied {
+  width: min(100%, 32rem);
+}
+
+.access-denied h2 {
+  margin: 0;
+}
+
 .tasks-section {
   margin-top: 2rem;
 }
 
-.tasks-section > h3 {
+.section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.section-heading h3 {
+  margin: 0;
   font-size: 1.4rem;
 }
 
@@ -261,6 +360,38 @@ a:focus-visible {
   margin: 0.45rem 0 0;
   color: #526173;
   font-size: 0.9rem;
+}
+
+.task-card-side {
+  display: grid;
+  justify-items: end;
+  gap: 0.75rem;
+}
+
+.task-actions {
+  display: grid;
+  justify-items: end;
+  gap: 0.45rem;
+  font-size: 0.875rem;
+  text-align: right;
+}
+
+.task-actions a,
+.danger-link {
+  font-weight: 700;
+}
+
+.danger-link {
+  padding: 0;
+  color: #9f1d20;
+  background: transparent;
+  text-decoration: underline;
+}
+
+.task-error {
+  max-width: 14rem;
+  margin: 0;
+  text-align: right;
 }
 
 .status-label {
@@ -309,6 +440,22 @@ a:focus-visible {
   }
 
   .task-card {
+    flex-direction: column;
+  }
+
+  .task-card-side,
+  .task-actions {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .task-error {
+    text-align: left;
+  }
+
+  .page-heading,
+  .section-heading {
+    align-items: flex-start;
     flex-direction: column;
   }
 }

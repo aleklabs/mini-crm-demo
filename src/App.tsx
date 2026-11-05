@@ -8,8 +8,10 @@ import {
 } from 'react-router-dom'
 import { useAuth, type UserRole } from './auth-context.ts'
 import { LoginPage } from './LoginPage.tsx'
+import { ProjectFormPage } from './ProjectFormPage.tsx'
 import { ProjectPage } from './ProjectPage.tsx'
 import { ProjectsPage } from './ProjectsPage.tsx'
+import { TaskFormPage } from './TaskFormPage.tsx'
 
 const roleLabels: Record<UserRole, string> = {
   executor: 'Исполнитель',
@@ -160,6 +162,20 @@ function ProtectedRoutes() {
   return <AppLayout />
 }
 
+function ManagerRoutes() {
+  const { profile } = useAuth()
+
+  if (profile?.role !== 'manager') {
+    return (
+      <section className="message access-denied">
+        <h2>Недостаточно прав</h2>
+      </section>
+    )
+  }
+
+  return <Outlet />
+}
+
 function NotFoundPage() {
   return (
     <main className="app-state">
@@ -177,6 +193,24 @@ function App() {
       <Route element={<ProtectedRoutes />}>
         <Route path="/projects" element={<ProjectsPage />} />
         <Route path="/projects/:projectId" element={<ProjectPage />} />
+        <Route element={<ManagerRoutes />}>
+          <Route
+            path="/projects/new"
+            element={<ProjectFormPage key="create" mode="create" />}
+          />
+          <Route
+            path="/projects/:projectId/edit"
+            element={<ProjectFormPage key="edit" mode="edit" />}
+          />
+          <Route
+            path="/projects/:projectId/tasks/new"
+            element={<TaskFormPage key="create" mode="create" />}
+          />
+          <Route
+            path="/tasks/:taskId/edit"
+            element={<TaskFormPage key="edit" mode="edit" />}
+          />
+        </Route>
       </Route>
       <Route path="*" element={<NotFoundPage />} />
     </Routes>

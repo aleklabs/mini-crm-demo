@@ -77,6 +77,11 @@ export function ProjectsPage() {
           <p className="eyebrow">Объекты строительства</p>
           <h2 id="projects-title">Объекты</h2>
         </div>
+        {profile?.role === 'manager' ? (
+          <Link className="button-link" to="/projects/new">
+            Создать объект
+          </Link>
+        ) : null}
       </div>
 
       {visibleState.kind === 'loading' ? (

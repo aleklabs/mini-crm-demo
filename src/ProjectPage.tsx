@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useEffect, useRef, useState } from 'react'
+import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useAuth } from './auth-context.ts'
 import type { Tables } from './database.types.ts'
 import { supabase } from './supabase.ts'
 
@@ -33,8 +34,23 @@ const statusLabels: Record<string, string> = {
 }
 
 export function ProjectPage() {
+  const navigate = useNavigate()
   const { projectId } = useParams()
+  const { profile } = useAuth()
   const [attempt, setAttempt] = useState(0)
+  const [deleteState, setDeleteState] = useState<{
+    kind: 'idle' | 'deleting' | 'error'
+    projectId: string | null
+  }>({ kind: 'idle', projectId: projectId ?? null })
+  const [taskDeleteState, setTaskDeleteState] = useState<{
+    kind: 'idle' | 'deleting' | 'error'
+    taskId: string | null
+  }>({ kind: 'idle', taskId: null })
+  const mounted = useRef(true)
+  const deleteRequestId = useRef(0)
+  const taskDeleteRequestId = useRef(0)
+  const taskDeleteInFlight = useRef<string | null>(null)
+  const currentProjectId = useRef(projectId)
   const [state, setState] = useState<ProjectState>({
     attempt: 0,
     kind: 'loading',
@@ -44,6 +60,23 @@ export function ProjectPage() {
     state.projectId === projectId && state.attempt === attempt
       ? state
       : { attempt, kind: 'loading', projectId: projectId ?? null }
+  const visibleDeleteState =
+    deleteState.projectId === projectId
+      ? deleteState.kind
+      : ('idle' as const)
+
+  useEffect(() => {
+    mounted.current = true
+    return () => {
+      mounted.current = false
+      deleteRequestId.current += 1
+      taskDeleteRequestId.current += 1
+    }
+  }, [])
+
+  useEffect(() => {
+    currentProjectId.current = projectId
+  }, [projectId])
 
   useEffect(() => {
     let active = true
@@ -108,6 +141,138 @@ export function ProjectPage() {
     }
   }, [attempt, projectId])
 
+  const handleProjectDelete = async () => {
+    if (!projectId || visibleDeleteState === 'deleting') {
+      return
+    }
+    if (!window.confirm('Удалить объект?')) {
+      return
+    }
+
+    const requestedProjectId = projectId
+    const requestId = deleteRequestId.current + 1
+    deleteRequestId.current = requestId
+    setDeleteState({ kind: 'deleting', projectId: requestedProjectId })
+
+    try {
+      const deletion = await supabase
+        .from('projects')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', requestedProjectId)
+
+      if (
+        !mounted.current ||
+        deleteRequestId.current !== requestId ||
+        currentProjectId.current !== requestedProjectId
+      ) {
+        return
+      }
+      if (deletion.error) {
+        setDeleteState({ kind: 'error', projectId: requestedProjectId })
+        return
+      }
+
+      const verification = await supabase
+        .from('projects')
+        .select('id')
+        .eq('id', requestedProjectId)
+        .maybeSingle()
+
+      if (
+        !mounted.current ||
+        deleteRequestId.current !== requestId ||
+        currentProjectId.current !== requestedProjectId
+      ) {
+        return
+      }
+      if (verification.error || verification.data) {
+        setDeleteState({ kind: 'error', projectId: requestedProjectId })
+        return
+      }
+
+      navigate('/projects', { replace: true })
+    } catch {
+      if (
+        mounted.current &&
+        deleteRequestId.current === requestId &&
+        currentProjectId.current === requestedProjectId
+      ) {
+        setDeleteState({ kind: 'error', projectId: requestedProjectId })
+      }
+    }
+  }
+
+  const handleTaskDelete = async (task: ProjectTask) => {
+    if (
+      !projectId ||
+      taskDeleteInFlight.current === task.id
+    ) {
+      return
+    }
+    if (!window.confirm(`Удалить задачу «${task.title}»?`)) {
+      return
+    }
+
+    const requestedProjectId = projectId
+    const requestedTaskId = task.id
+    const requestId = taskDeleteRequestId.current + 1
+    taskDeleteRequestId.current = requestId
+    taskDeleteInFlight.current = requestedTaskId
+    setTaskDeleteState({ kind: 'deleting', taskId: requestedTaskId })
+
+    try {
+      const deletion = await supabase
+        .from('tasks')
+        .update({ deleted_at: new Date().toISOString() })
+        .eq('id', requestedTaskId)
+
+      if (
+        !mounted.current ||
+        taskDeleteRequestId.current !== requestId ||
+        currentProjectId.current !== requestedProjectId
+      ) {
+        return
+      }
+      if (deletion.error) {
+        setTaskDeleteState({ kind: 'error', taskId: requestedTaskId })
+        return
+      }
+
+      const verification = await supabase
+        .from('tasks')
+        .select('id')
+        .eq('id', requestedTaskId)
+        .maybeSingle()
+
+      if (
+        !mounted.current ||
+        taskDeleteRequestId.current !== requestId ||
+        currentProjectId.current !== requestedProjectId
+      ) {
+        return
+      }
+      if (verification.error || verification.data) {
+        setTaskDeleteState({ kind: 'error', taskId: requestedTaskId })
+        return
+      }
+
+      setTaskDeleteState({ kind: 'idle', taskId: null })
+      setAttempt((value) => value + 1)
+    } catch {
+      if (
+        mounted.current &&
+        taskDeleteRequestId.current === requestId &&
+        currentProjectId.current === requestedProjectId
+      ) {
+        setTaskDeleteState({ kind: 'error', taskId: requestedTaskId })
+      }
+    } finally {
+      if (taskDeleteInFlight.current === requestedTaskId) {
+        taskDeleteInFlight.current = null
+      }
+    }
+  }
+
   return (
     <section aria-labelledby="project-title">
       <Link className="back-link" to="/projects">
@@ -141,10 +306,45 @@ export function ProjectPage() {
             <p className="eyebrow">Объект</p>
             <h2 id="project-title">{visibleState.project.name}</h2>
             <p>{visibleState.project.address}</p>
+            {profile?.role === 'manager' ? (
+              <div className="project-actions">
+                <Link
+                  className="button-link"
+                  to={`/projects/${visibleState.project.id}/edit`}
+                >
+                  Редактировать
+                </Link>
+                <button
+                  className="danger-button"
+                  disabled={visibleDeleteState === 'deleting'}
+                  type="button"
+                  onClick={handleProjectDelete}
+                >
+                  {visibleDeleteState === 'deleting'
+                    ? 'Удаление…'
+                    : 'Удалить объект'}
+                </button>
+              </div>
+            ) : null}
+            {visibleDeleteState === 'error' ? (
+              <p className="error-message form-message" role="alert">
+                Не удалось удалить объект. Повторите попытку.
+              </p>
+            ) : null}
           </div>
 
           <section aria-labelledby="tasks-title" className="tasks-section">
-            <h3 id="tasks-title">Задачи</h3>
+            <div className="section-heading">
+              <h3 id="tasks-title">Задачи</h3>
+              {profile?.role === 'manager' ? (
+                <Link
+                  className="button-link"
+                  to={`/projects/${visibleState.project.id}/tasks/new`}
+                >
+                  Создать задачу
+                </Link>
+              ) : null}
+            </div>
             {visibleState.tasks.length === 0 ? (
               <p className="message empty-message">Нет задач</p>
             ) : (
@@ -158,9 +358,42 @@ export function ProjectPage() {
                           <p>Исполнитель: {task.assignee.display_name}</p>
                         ) : null}
                       </div>
-                      <span className="status-label">
-                        {statusLabels[task.status] ?? task.status}
-                      </span>
+                      <div className="task-card-side">
+                        <span className="status-label">
+                          {statusLabels[task.status] ?? task.status}
+                        </span>
+                        {profile?.role === 'manager' ? (
+                          <div className="task-actions">
+                            <Link
+                              aria-label={`Редактировать задачу «${task.title}»`}
+                              to={`/tasks/${task.id}/edit`}
+                            >
+                              Редактировать задачу
+                            </Link>
+                            <button
+                              aria-label={`Удалить задачу «${task.title}»`}
+                              className="danger-link"
+                              disabled={
+                                taskDeleteState.kind === 'deleting' &&
+                                taskDeleteState.taskId === task.id
+                              }
+                              type="button"
+                              onClick={() => handleTaskDelete(task)}
+                            >
+                              {taskDeleteState.kind === 'deleting' &&
+                              taskDeleteState.taskId === task.id
+                                ? 'Удаление…'
+                                : 'Удалить задачу'}
+                            </button>
+                          </div>
+                        ) : null}
+                        {taskDeleteState.kind === 'error' &&
+                        taskDeleteState.taskId === task.id ? (
+                          <p className="error-message task-error" role="alert">
+                            Не удалось удалить задачу. Повторите попытку.
+                          </p>
+                        ) : null}
+                      </div>
                     </article>
                   </li>
                 ))}
